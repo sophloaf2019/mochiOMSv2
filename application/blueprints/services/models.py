@@ -129,20 +129,28 @@ class DateOption(Option):
     default_value = db.Column(db.DateTime, nullable=True)
     enforce_future_date = db.Column(db.Boolean, nullable=True)
 
+
 class SelectOption(Option):
     __tablename__ = "select_options"
 
-    selectables = db.relationship('Selectable', back_populates='select_option')
-    default_value_id = db.Column(db.Integer, db.ForeignKey('selectables.id', use_alter = True), nullable=True)
-    default_value = db.relationship('Selectable', foreign_keys=[default_value_id], backref='default_for')
+    selectables = db.relationship("Selectable", back_populates="select_option")
+    default_value_id = db.Column(
+        db.Integer, db.ForeignKey("selectables.id", use_alter=True), nullable=True
+    )
+    default_value = db.relationship(
+        "Selectable", foreign_keys=[default_value_id], backref="default_for"
+    )
+
 
 class Selectable(db.Model):
     __tablename__ = "selectables"
-    
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     cost = db.Column(db.Float, nullable=False)
 
-    select_option_id = db.Column(db.Integer, db.ForeignKey('select_options.id'), nullable=False)
-    select_option = db.relationship('SelectOption', back_populates="selectables")
+    select_option_id = db.Column(
+        db.Integer, db.ForeignKey("select_options.id"), nullable=False
+    )
+    select_option = db.relationship("SelectOption", back_populates="selectables")
