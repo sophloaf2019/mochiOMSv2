@@ -6,9 +6,8 @@
             {% include "navbar.html" %}
         {% endwith %}
         <h1>"{{service.name}}" properties</h1>
-        <a href="{{ url_for('services.view', id = service.id) }}">Go back</a>
-        <form class="mt-4" action="{{url_for('services.save', id=service.id)}}" method="post">
-            <input type="hidden" name="type_select" value="service">
+        <a href="{{ url_for('services.view', id = service.id, url_type=service.url_type) }}">Go back</a>
+        <form class="mt-4" action="{{url_for('services.save', id=service.id, url_type=service.url_type)}}" method="post">
             <label for="name">Name</label>
             <input type="text" name="name" id="name" value="{{service.name}}">
 
@@ -42,7 +41,7 @@
         {% else %}
             <p>No required fields.</p>
         {% endif %}
-        <form action="{{url_for('services.new', id = service.id)}}" method="post">
+        <form action="{{url_for('services.new')}}" method="post">
             <input type="hidden" name="parent_service_id" value="{{service.id}}">
             <select name="type_select" id="type_select">
                 {% for type in all_types %}
@@ -56,7 +55,7 @@
         <h2>Child services</h2>
         {% if service.child_services %}
             {% for child in service.child_services %}
-                <p>{{child.name}} (<a href="{{url_for('services.edit', id = child.id)}}">Edit</a>)</p>
+                <p>{{child.name}} (<a href="{{url_for('services.edit', id = child.id, url_type=child.url_type)}}">Edit</a>)</p>
             {% endfor %}
         {% else %}
             <p>No child services.</p>
@@ -70,7 +69,7 @@
         </form>
         <h2>Parent service</h2>
         {% if service.parent_service %}
-            <p>{{service.parent_service.name}} (<a href="{{url_for('services.edit', id = service.parent_service_id)}}">Edit</a>)</p>
+            <p>{{service.parent_service.name}} (<a href="{{url_for('services.edit', id = service.parent_service_id, type = service.parent_service.url_type)}}">Edit</a>)</p>
         {% else %}
             <p>No parent service.</p>
         {% endif %}

@@ -8,7 +8,7 @@
         <h1>Services</h1>
         {% if services %}
             {% for service in services %}
-                <a href="{{url_for('services.view', id = service.id)}}">{{service.name}}</a>
+                <a href="{{url_for('services.view', id = service.id, url_type=service.url_type) }}">{{service.name}}</a>
             {% endfor %}
         {% else %}
             Looks like you haven't added any <span class="font-semibold">Services</span> yet. Click the button below to get started.
