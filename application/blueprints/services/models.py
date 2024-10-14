@@ -41,46 +41,88 @@ class Service(db.Model):
     __tablename__ = "services"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    price = db.Column(db.Float, nullable=False)
-    cost = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String, nullable=False, default="New Service")
+    description = db.Column(db.Text, nullable=True, default="This is the description for your new service.")
+    price = db.Column(db.Float, nullable=False, default=0)
+    cost = db.Column(db.Float, nullable=False, default=0)
     is_archived = db.Column(db.Boolean, nullable=True, default=False)
-    total_cost = db.Column(db.Integer, nullable=True)
-    revenue = db.Column(db.Integer, nullable=True)
+    total_cost = db.Column(db.Float, nullable=True, default=0)
+    revenue = db.Column(db.Float, nullable=True, default=0)
 
-    service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=True)
-    child_services = db.relationship("Service", backref="parent_service", lazy=True)
-    text_options = db.relationship("TextOption", backref="parent_service", lazy=True)
+    parent_service_id = db.Column(db.Integer, db.ForeignKey('services.id'), nullable=True, default=None)
+    
+    # Relationship for child services (points to other Service rows)
+    child_services = db.relationship(
+        "Service",
+        backref=db.backref('parent_service', remote_side=[id]),
+        lazy=True, cascade="all, delete-orphan"
+    )
+    text_options = db.relationship("TextOption", backref="parent_service", lazy=True, cascade="all, delete-orphan")
     textarea_options = db.relationship(
-        "TextareaOption", backref="parent_service", lazy=True
+        "TextareaOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
     )
     number_options = db.relationship(
-        "NumberOption", backref="parent_service", lazy=True
+        "NumberOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
     )
-    float_options = db.relationship("FloatOption", backref="parent_service", lazy=True)
+    float_options = db.relationship("FloatOption", backref="parent_service", lazy=True, cascade="all, delete-orphan")
     boolean_options = db.relationship(
-        "BooleanOption", backref="parent_service", lazy=True
+        "BooleanOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
     )
-    date_options = db.relationship("DateOption", backref="parent_service", lazy=True)
+    date_options = db.relationship("DateOption", backref="parent_service", lazy=True, cascade="all, delete-orphan")
 
-    # inventory_id = db.Column(
-    #     db.Integer, db.ForeignKey("inventory.id", ondelete="SET NULL"), nullable=True
-    # )
-    # inventory = db.relationship("Inventory", back_populates="selectables")
-    # inventory_multiplier = db.Column(db.Float, nullable=True)
+    inventory_id = db.Column(
+        db.Integer, db.ForeignKey("inventory.id", ondelete="SET NULL"), nullable=True
+    )
+    inventory = db.relationship("Inventory", back_populates="services")
+    inventory_multiplier = db.Column(db.Float, nullable=True, default=1)
+    
+    @property
+    def all_field_children(self):
+        return self.text_options + self.textarea_options + self.number_options + self.float_options + self.boolean_options + self.date_options
+    
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'cost': self.cost,
+            'is_archived': self.is_archived,
+            'total_cost': self.total_cost,
+            'revenue': self.revenue,
+            
+            'child_services': [child.to_dict() for child in self.child_services],
+            'text_options': [child.to_dict() for child in self.text_options],
+            'textarea_options': [child.to_dict() for child in self.textarea_options],
+            'number_options': [child.to_dict() for child in self.number_options],
+            'float_options': [child.to_dict() for child in self.float_options],
+            'boolean_options': [child.to_dict() for child in self.boolean_options],
+            'date_options': [child.to_dict() for child in self.date_options],
+            'inventory': self.inventory.name,
+            'inventory_multiplier': self.inventory_multiplier
+        }
 
 
 class Option(db.Model):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
-    notes = db.Column(db.Text, nullable=True)
+    name = db.Column(db.String, nullable=False, default = "New Option")
+    notes = db.Column(db.Text, nullable=True, default = "These are the notes for your new option.")
     # price = db.Column(db.Float, nullable=False)
     # cost = db.Column(db.Float, nullable=False)
     is_archived = db.Column(db.Boolean, nullable=False, default=False)
-    service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=True)
+    parent_service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=False)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'notes': self.notes,
+            'is_archived': self.is_archived,
+        }
+    
 
 
 class TextOption(Option):
@@ -89,6 +131,18 @@ class TextOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'minimum_length': self.minimum_length,
+                'maximum_length': self.maximum_length,
+                'default_value': self.default_value
+            }
+        )
+        return data
 
 
 class TextareaOption(Option):
@@ -97,6 +151,18 @@ class TextareaOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'minimum_length': self.minimum_length,
+                'maximum_length': self.maximum_length,
+                'default_value': self.default_value
+            }
+        )
+        return data
 
 
 class NumberOption(Option):
@@ -106,6 +172,19 @@ class NumberOption(Option):
     maximum = db.Column(db.Integer, nullable=True)
     step = db.Column(db.Integer, nullable=False, default=1)
     default_value = db.Column(db.Integer, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'minimum': self.minimum,
+                'maximum': self.maximum,
+                'step': self.step,
+                'default_value': self.default_value
+            }
+        )
+        return data
 
 
 class FloatOption(Option):
@@ -115,12 +194,35 @@ class FloatOption(Option):
     maximum = db.Column(db.Float, nullable=True)
     step = db.Column(db.Float, nullable=False, default=1)
     default_value = db.Column(db.Float, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'minimum': self.minimum,
+                'maximum': self.maximum,
+                'step': self.step,
+                'default_value': self.default_value
+            }
+        )
+        return data
 
 
 class BooleanOption(Option):
     __tablename__ = "boolean_options"
 
     default_value = db.Column(db.Boolean, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'default_value': self.default_value
+            }
+        )
+        return data
 
 
 class DateOption(Option):
@@ -128,18 +230,47 @@ class DateOption(Option):
 
     default_value = db.Column(db.DateTime, nullable=True)
     enforce_future_date = db.Column(db.Boolean, nullable=True)
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'default_value': self.default_value,
+                'enforce_future_date': self.enforce_future_date
+            }
+        )
+        return data
 
 
 class SelectOption(Option):
     __tablename__ = "select_options"
 
-    selectables = db.relationship("Selectable", back_populates="select_option")
+    # Define the foreign key for the selectables relationship
+    selectables = db.relationship(
+        "Selectable",
+        back_populates="select_option",
+        foreign_keys="Selectable.select_option_id"  # Use this foreign key
+    )
+
+    # Foreign key for default_value relationship
     default_value_id = db.Column(
-        db.Integer, db.ForeignKey("selectables.id", use_alter=True), nullable=True
+        db.Integer, db.ForeignKey("selectables.id"), nullable=True
     )
     default_value = db.relationship(
-        "Selectable", foreign_keys=[default_value_id], backref="default_for"
+        "Selectable", foreign_keys=[default_value_id]
     )
+    
+    def to_dict(self):
+        data = super().to_dict()
+        
+        data.update(
+            {
+                'selectables': [child.to_dict() for child in self.selectables],
+                'default_value': self.default_value.to_dict()
+            }
+        )
+        return data
 
 
 class Selectable(db.Model):
@@ -150,7 +281,29 @@ class Selectable(db.Model):
     price = db.Column(db.Float, nullable=False)
     cost = db.Column(db.Float, nullable=False)
 
+    # Foreign key back to SelectOption
     select_option_id = db.Column(
         db.Integer, db.ForeignKey("select_options.id"), nullable=False
     )
-    select_option = db.relationship("SelectOption", back_populates="selectables")
+    select_option = db.relationship(
+        "SelectOption",
+        back_populates="selectables",
+        foreign_keys=[select_option_id]  # Specify the foreign key
+    )
+
+    # Inventory relationship
+    inventory_id = db.Column(
+        db.Integer, db.ForeignKey("inventory.id", ondelete="SET NULL"), nullable=True
+    )
+    inventory = db.relationship("Inventory", back_populates="selectables")
+    inventory_multiplier = db.Column(db.Float, nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'cost': self.cost,
+            'inventory': self.inventory.name,
+            'inventory_multiplier': self.inventory_multiplier
+        }

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="max-w-5xl mx-auto px-4 my-6">
+        {% with active_link='services' %}
+            {% include "navbar.html" %}
+        {% endwith %}
+        <h1>{{service.name}}</h1>
+        {% if service.is_archived %}
+            <p class="text-red-500">This <span class="font-semibold">Service</span> is archived. Edits can still be made, however, this <span class="font-semibold">Service</span> is not useable in new orders.</p>
+        {% endif %}
+        <p>{{service.description}}</p>
+        <a href="{{ url_for('services.edit', id = service.id)}}">Edit this service</a>
+        <h2>Finances</h2>
+        <p>Cost of ${{service.cost}} per service; ${{service.total_cost}} expenses accrued</p>
+        <p>Price of ${{service.price}} per service; ${{service.revenue}} revenue earned</p>
+        <h2>Children</h2>
+        <h3>Sub-services</h3>
+        {% if service.child_services %}
+            {% for child in service.child_services %}
+                <a href="{{ url_for('services.view', id = child.id) }}">{{child.name}}</a>
+            {% endfor %}
+        {% else %}
+            <p>No child services.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

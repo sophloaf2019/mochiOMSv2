@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="max-w-5xl mx-auto px-4">
+        <h1 class="underline decoration-8 decoration-violet-400">mochiOMS</h1>
+        <p>Operations Management, made easy.</p>
+        <form class="mb-10" action="{{url_for('login.login')}}" method="post">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+
+            {% with text='Login', color='violet' %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+
+        <form action="{{url_for('login.register')}}" method="post">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+            <label for="first_name">First Name</label>
+            <input type="first_name" name="first_name" id="first_name">
+            <label for="last_name">Last Name</label>
+            <input type="last_name" name="last_name" id="last_name">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email">
+            <label for="phone_number">Phone Number</label>
+            <input type="phone_number" name="phone_number" id="phone_number">
+
+            {% with text='Register', color='indigo' %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+    </div>
+{% endblock content %}

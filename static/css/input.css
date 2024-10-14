@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .work-sans-thin {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 100;
+        font-style: normal;
+    }
+
+    .work-sans-light {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 300;
+        font-style: normal;
+    }
+
+    .work-sans-regular {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    .work-sans-medium {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+    }
+
+    .work-sans-bold {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    .work-sans-black {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 900;
+        font-style: normal;
+    }
+
+    .work-sans-thin-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 100;
+        font-style: italic;
+    }
+
+    .work-sans-light-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 300;
+        font-style: italic;
+    }
+
+    .work-sans-regular-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 400;
+        font-style: italic;
+    }
+
+    .work-sans-medium-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 500;
+        font-style: italic;
+    }
+
+    .work-sans-bold-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 700;
+        font-style: italic;
+    }
+
+    .work-sans-black-italic {
+        font-family: "Work Sans", sans-serif;
+        font-weight: 900;
+        font-style: italic;
+    }
+
+    .lora-light {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 300;
+        font-style: normal;
+    }
+
+    .lora-regular {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    .lora-medium {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 600;
+        font-style: normal;
+    }
+
+    .lora-bold {
+        font-family: "Lora", serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-style: normal;
+    }
+      
+
+    * {
+        @apply work-sans-regular;
+    }
+
+    h1 {
+        @apply work-sans-bold text-7xl my-8
+    }
+
+    h2 {
+        @apply lora-bold text-6xl my-8
+    }
+
+    h3 {
+        @apply work-sans-bold text-5xl my-8
+    }
+
+    h4 {
+        @apply lora-medium text-4xl my-6
+    }
+
+    h5 {
+        @apply work-sans-medium text-3xl my-6
+    }
+
+    h6 {
+        @apply lora-medium text-2xl my-6
+    }
+
+    p, a {
+        @apply work-sans-regular my-4
+    }
+
+    label {
+        @apply block
+    }
+
+    input, textarea {
+        @apply block mb-4 border-neutral-300 border px-1 work-sans-regular;
+        resize: none;
+    }
+
+    select {
+        @apply px-2 py-1 border-neutral-300 border bg-inherit block mb-4 work-sans-regular text-lg
+    }
+
+    option {
+        @apply p-2
+    }
+
+    a {
+        background-image: linear-gradient(#a78bfa, #a78bfa), linear-gradient(#d4d4d4, #d4d4d4) ;
+        background-size: 0% 0.1em, 100% 0.1em;
+        background-position-y: 100%;
+        background-repeat: no-repeat;
+        transition: background-size 0.25s ease-in-out;
+        text-decoration: none;
+        background-position-x: 100%;
+    }
+
+    a:hover, a:focus, a:active {
+        background-size: 100% 0.1em, 100% 0.1em;
+        background-position-x: 0%;
+    }
+
+    .active-link {
+        background-image: linear-gradient(#a78bfa, #a78bfa), linear-gradient(#a78bfa, #a78bfa) ;
+    }
+    
+    .flash-success { 
+        @apply border border-green-500 p-4 my-8
+    }
+
+    .flash-danger {
+        @apply border border-red-500 p-4 my-8
+    }
+}
+
+@layer utilities {
+    
+}

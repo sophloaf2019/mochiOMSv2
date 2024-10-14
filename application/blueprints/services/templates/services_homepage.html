@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="max-w-5xl mx-auto px-4 mt-6">
+        {% with active_link='services' %}
+            {% include "navbar.html" %}
+        {% endwith %}
+        <h1>Services</h1>
+        {% if services %}
+            {% for service in services %}
+                <a href="{{url_for('services.view', id = service.id)}}">{{service.name}}</a>
+            {% endfor %}
+        {% else %}
+            Looks like you haven't added any <span class="font-semibold">Services</span> yet. Click the button below to get started.
+        {% endif %}
+        <form class="mt-4" action="{{url_for('services.new')}}" method="post">
+            <input type="hidden" name="type_select" value="service">
+            {% with text="Add New Service", color="violet" %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+    </div>
+{% endblock content %}

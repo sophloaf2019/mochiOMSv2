@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="max-w-5xl mx-auto px-4 my-6">
+        {% with active_link='services' %}
+            {% include "navbar.html" %}
+        {% endwith %}
+        <h1>"{{service.name}}" properties</h1>
+        <a href="{{ url_for('services.view', id = service.id) }}">Go back</a>
+        <form class="mt-4" action="{{url_for('services.save', id=service.id)}}" method="post">
+            <input type="hidden" name="type_select" value="service">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" value="{{service.name}}">
+
+            <label for="description">Description</label>
+            <textarea name="description" id="description" cols="30" rows="10">{{service.description}}</textarea>
+
+            <label for="price">Price (in $)</label>
+            <input type="number" min="0" step="0.01" name="price" id="price" value="{{service.price}}">
+
+            <label for="cost">Cost (in $)</label>
+            <input type="number" min="0" step="0.01" name="cost" id="cost" value="{{service.cost}}">
+            
+            <label for="revenue">Revenue (in $)</label>
+            <input type="number" min="0" step="0.01" name="revenue" id="revenue" value="{{service.revenue}}">
+
+            <label for="total_cost">Total cost (in $)</label>
+            <input type="number" min="0" step="0.01" name="total_cost" id="total_cost" value="{{service.total_cost}}">
+            
+            
+            <label for="is_archived" class="text-red-500 flex gap-2 max-w-fit"><input type="checkbox" {% if service.is_archived %}checked{% endif %} name="is_archived" id="is_archived" value="True" class="inline-block accent-red-500"> <span class="mb-4">Archive?</span></label>
+            <input type="hidden" name="is_archived" value="False">
+            {% with text="Save", color="violet" %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+        <h2>Required fields</h2>
+        {% if service.all_field_children %}
+            {% for child in service.all_field_children %}
+
+            {% endfor %}
+        {% else %}
+            <p>No required fields.</p>
+        {% endif %}
+        <form action="{{url_for('services.new', id = service.id)}}" method="post">
+            <input type="hidden" name="parent_service_id" value="{{service.id}}">
+            <select name="type_select" id="type_select">
+                {% for type in all_types %}
+                    <option value="{{type}}">{{type}}</option>
+                {% endfor %}
+            </select>
+            {% with text="Add New Field", color="violet" %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+        <h2>Child services</h2>
+        {% if service.child_services %}
+            {% for child in service.child_services %}
+                <p>{{child.name}} (<a href="{{url_for('services.edit', id = child.id)}}">Edit</a>)</p>
+            {% endfor %}
+        {% else %}
+            <p>No child services.</p>
+        {% endif %}
+        <form class="mt-4" action="{{url_for('services.new')}}" method="post">
+            <input type="hidden" name="type_select" value="service">
+            <input type="hidden" name="parent_service_id" value="{{service.id}}">
+            {% with text="Add New Service", color="violet" %}
+                {% include "button.html" %}
+            {% endwith %}
+        </form>
+        <h2>Parent service</h2>
+        {% if service.parent_service %}
+            <p>{{service.parent_service.name}} (<a href="{{url_for('services.edit', id = service.parent_service_id)}}">Edit</a>)</p>
+        {% else %}
+            <p>No parent service.</p>
+        {% endif %}
+    </div>
+{% endblock content %}
