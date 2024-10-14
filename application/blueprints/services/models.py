@@ -293,7 +293,11 @@ class SelectOption(Option):
 
     # Foreign key for default_value relationship
     default_value_id = db.Column(
-        db.Integer, db.ForeignKey("selectables.id"), nullable=True
+        db.Integer,
+        db.ForeignKey(
+            "selectables.id", name="fk_select_options_selectables", use_alter=True
+        ),
+        nullable=True,
     )
     default_value = db.relationship("Selectable", foreign_keys=[default_value_id])
 
@@ -321,7 +325,9 @@ class Selectable(db.Model):
 
     # Foreign key back to SelectOption
     select_option_id = db.Column(
-        db.Integer, db.ForeignKey("select_options.id"), nullable=False
+        db.Integer,
+        db.ForeignKey("select_options.id", name="fk_selectables_select_options"),
+        nullable=False,
     )
     select_option = db.relationship(
         "SelectOption",

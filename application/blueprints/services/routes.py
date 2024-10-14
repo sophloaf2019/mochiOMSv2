@@ -23,7 +23,7 @@ all_types = [
 # 'url_type'.
 # This dictionary performs on a lookup on this map and perform a query using the second URL piece,
 # 'id'.
-# So, 
+# So,
 # Service.url_type is 'service'. We have a url coming in that's /service/1, which is mapped to the view() function.
 # The dictionary looks up the word 'service' and finds it's related to the Service class. It performs a query on Service
 # with the ID 1 and passes that to the Jinja template. Clever!
@@ -86,7 +86,7 @@ def new():
     else:
         id = new_model.parent_service_id
 
-    return redirect(url_for("services.edit", id=id))
+    return redirect(url_for("services.edit", id=id, url_type=new_model.url_type))
 
 
 @services_bp.route("/<url_type>/<id>", methods=["GET"])
@@ -95,11 +95,14 @@ def view(url_type, id):
     if model:
         return render_template("services_view.html", service=model)
     else:
-        flash("Nothing of type " + model + " exists with ID " + str(id), "danger")
+        flash(
+            "Nothing of type '" + url_type + "' exists with ID " + str(id) + ".",
+            "danger",
+        )
         return redirect(url_for("services.homepage"))
 
 
-@services_bp.route("/<id>/edit", methods=["GET"])
+@services_bp.route("/<url_type>/<id>/edit", methods=["GET"])
 def edit(url_type, id):
     model = url_class_map.get(url_type).query.get(id)
     if model:
@@ -120,16 +123,15 @@ def update_instance_fields(instance, data):
 
 @services_bp.route("/<url_type>/<id>/edit/save", methods=["POST"])
 def save(url_type, id):
+    data = request.form.to_dict()
     model = url_class_map.get(url_type).query.get(id)
     if model:
-        return render_template("services_edit.html", model=model, all_types=all_types)
-    data = request.form.to_dict()
-
+        update_instance_fields(model, data)  # Use helper function
+        db.session.commit()
+        flash("Changes saved.", "success")
+        return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
     if not model:
         flash("No service under that ID.", "danger")
         return redirect(url_for("services.homepage"))
 
-    update_instance_fields(model, data)  # Use helper function
-    db.session.commit()
-    flash("Changes saved.", "success")
-    return redirect(url_for("services.edit", id=model.id))
+    return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
