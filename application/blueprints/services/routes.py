@@ -4,6 +4,8 @@ from application.extensions import db
 from application.blueprints.services.models import *
 
 
+# An easy-to-find list of all available configurable options.
+# Notably, Service is not present. The user gets a seperate button for that.
 all_types = [
     TextOption.url_type,
     TextareaOption.url_type,
@@ -13,6 +15,18 @@ all_types = [
     DateOption.url_type,
     SelectOption.url_type,
 ]
+
+# The URL class map is key for functionality in URLs.
+# Since mochiOMS v2 has multiple tables for different option types,
+# we can't guarantee the ID is unique.
+# So, we create a url map. The URL will contain an attribute called
+# 'url_type'.
+# This dictionary performs on a lookup on this map and perform a query using the second URL piece,
+# 'id'.
+# So, 
+# Service.url_type is 'service'. We have a url coming in that's /service/1, which is mapped to the view() function.
+# The dictionary looks up the word 'service' and finds it's related to the Service class. It performs a query on Service
+# with the ID 1 and passes that to the Jinja template. Clever!
 
 url_class_map = {
     Service.url_type: Service,
