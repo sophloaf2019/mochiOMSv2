@@ -1,4 +1,4 @@
-from application.extensions import db
+from application.extensions import db, FormModel
 from sqlalchemy.orm import backref
 
 
@@ -21,7 +21,7 @@ Current classes:
 """
 
 
-class Service(db.Model):
+class Service(db.Model, FormModel):
     """
 
     Represents the greater service 'category'. Can contain children.
@@ -39,6 +39,8 @@ class Service(db.Model):
     """
 
     __tablename__ = "services"
+    
+    form_attribute_list = {'name': 'text', 'description': 'textarea', 'price':'float', 'cost':'float', 'is_archived': 'boolean', 'total_cost':'float', 'revenue':'float'}
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False, default="New Service")
@@ -131,7 +133,7 @@ class Service(db.Model):
     url_type = "service"
 
 
-class Option(db.Model):
+class Option(db.Model, FormModel):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -145,6 +147,8 @@ class Option(db.Model):
     parent_service_id = db.Column(
         db.Integer, db.ForeignKey("services.id"), nullable=False
     )
+    
+    form_attribute_list = {'name': 'text', 'notes': 'textarea', 'is_archived': 'boolean'}
 
     def to_dict(self):
         return {
@@ -161,6 +165,8 @@ class TextOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'minimum_length': 'number', 'maximum_length': 'number', 'default_value': 'text'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -183,6 +189,8 @@ class TextareaOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'minimum_length': 'number', 'maximum_length': 'number', 'default_value': 'text'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -206,6 +214,8 @@ class NumberOption(Option):
     maximum = db.Column(db.Integer, nullable=True)
     step = db.Column(db.Integer, nullable=False, default=1)
     default_value = db.Column(db.Integer, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'minimum': 'number', 'maximum': 'number', 'step': 'number', 'default_value': 'number'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -230,6 +240,8 @@ class FloatOption(Option):
     maximum = db.Column(db.Float, nullable=True)
     step = db.Column(db.Float, nullable=False, default=1)
     default_value = db.Column(db.Float, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'minimum': 'float', 'maximum': 'float', 'step': 'float', 'default_value': 'float'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -251,6 +263,8 @@ class BooleanOption(Option):
     __tablename__ = "boolean_options"
 
     default_value = db.Column(db.Boolean, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'default_value': 'boolean'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -266,6 +280,8 @@ class DateOption(Option):
 
     default_value = db.Column(db.DateTime, nullable=True)
     enforce_future_date = db.Column(db.Boolean, nullable=True)
+    
+    form_attribute_list = {**Option.form_attribute_list, 'default_value': 'datetime-local', 'enforce_future_date': 'boolean'}
 
     def to_dict(self):
         data = super().to_dict()
@@ -315,7 +331,7 @@ class SelectOption(Option):
     url_type = "select"
 
 
-class Selectable(db.Model):
+class Selectable(db.Model, FormModel):
     __tablename__ = "selectables"
 
     id = db.Column(db.Integer, primary_key=True)

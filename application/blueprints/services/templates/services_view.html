@@ -11,6 +11,7 @@
         {% endif %}
         <p>{{service.description}}</p>
         <a href="{{ url_for('services.edit', id = service.id, url_type = service.url_type)}}">Edit this service</a>
+        <a class="block max-w-fit" href="{{ url_for('services.homepage') }}">Go to homepage</a>
         <h2>Finances</h2>
         <p>Cost of ${{service.cost}} per service; ${{service.total_cost}} expenses accrued</p>
         <p>Price of ${{service.price}} per service; ${{service.revenue}} revenue earned</p>

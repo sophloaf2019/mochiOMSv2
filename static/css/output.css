@@ -730,16 +730,24 @@ a:hover, a:focus, a:active {
   margin-bottom: 2.5rem;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
 .mt-4 {
   margin-top: 1rem;
 }
 
 .mt-6 {
   margin-top: 1.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.ml-8 {
+  margin-left: 2rem;
 }
 
 .block {
@@ -10629,10 +10637,6 @@ a:hover, a:focus, a:active {
 
 .decoration-8 {
   text-decoration-thickness: 8px;
-}
-
-.accent-red-500 {
-  accent-color: #ef4444;
 }
 
 .transition-colors {

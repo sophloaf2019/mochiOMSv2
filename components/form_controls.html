@@ -1,0 +1,11 @@
+{% if input_type == 'textarea' %}
+    <label for="{{ attr }}">{{ label }}</label>
+    <textarea name="{{ attr }}" id="{{ attr }}">{{ value }}</textarea>
+{% elif input_type == 'checkbox' %}
+    <label for="{{ attr }}" class="flex gap-2 max-w-fit"><input type="checkbox" name="{{ attr }}" value="True" class="inline-block" {% if value %} checked {% endif %}><span class="mb-4">{{ label }}</span></label>
+    <input type="hidden" name="{{ attr }}" value="False">
+{% else %}
+    <label for="{{ attr }}">{{ label }}</label>
+    <input type="{{ input_type }}" name="{{ attr }}" id="{{ attr }}" value="{{ value }}"
+           {% if step %} step="{{ step }}" {% endif %}>
+{% endif %}

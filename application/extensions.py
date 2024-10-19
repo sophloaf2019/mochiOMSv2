@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from sqlalchemy import MetaData
 from flask import render_template
+from termcolor import cprint
 
 convention = {
     "ix": "ix_%(column_0_label)s",
@@ -17,37 +18,22 @@ class FormModel:
     def to_form(self):
         form_html = ""
         
-        for attr in self.form_attribute_list:
+        for attr, input_type in self.form_attribute_list.items():
             value = getattr(self, attr)
-            label = attr.capitalize()  # Capitalize the attribute name for the label
-            
-            # Determine the input type based on column type
-            if isinstance(self.__table__.columns[attr].type, db.Integer):
-                input_type = 'number'
-                step = '1'
-            elif isinstance(self.__table__.columns[attr].type, db.Float):
+            label = attr.replace("_", " ").title()
+            step = '1'
+            # number, float, text, textarea, checkbox
+            if input_type == 'float':
                 input_type = 'number'
                 step = '0.01'
-            elif isinstance(self.__table__.columns[attr].type, db.String):
-                input_type = 'text'
-            elif isinstance(self.__table__.columns[attr].type, db.Text):
-                input_type = 'textarea'
-            elif isinstance(self.__table__.columns[attr].type, db.Boolean):
+            if input_type == 'boolean':
                 input_type = 'checkbox'
-                hidden_input = f'<input type="hidden" name="{attr}" value="False">'
-                checkbox = f'<input type="checkbox" name="{attr}" value="True" {"checked" if value else ""}>'
-                form_html += f'<label for="{attr}">{label}</label>{hidden_input}{checkbox}<br>'
-                continue
-            elif isinstance(self.__table__.columns[attr].type, db.DateTime):
-                input_type = 'datetime-local'
-            
-            # Render the input field using Jinja
             form_html += render_template('form_controls.html', 
                                           attr=attr, 
                                           label=label, 
                                           value=value, 
                                           input_type=input_type, 
-                                          step=step if 'step' in locals() else None)
+                                          step=step)
         
         return form_html
 

@@ -80,13 +80,7 @@ def new():
     db.session.add(new_model)
     db.session.commit()
 
-    id = None
-    if isinstance(new_model, Service):
-        id = new_model.id
-    else:
-        id = new_model.parent_service_id
-
-    return redirect(url_for("services.edit", id=id, url_type=new_model.url_type))
+    return redirect(request.referrer)
 
 
 @services_bp.route("/<url_type>/<id>", methods=["GET"])
