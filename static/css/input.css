@@ -161,6 +161,7 @@
         transition: background-size 0.25s ease-in-out;
         text-decoration: none;
         background-position-x: 100%;
+        cursor: pointer !important;
     }
 
     a:hover, a:focus, a:active {
@@ -178,6 +179,10 @@
 
     .flash-danger {
         @apply border border-red-500 p-4 my-8
+    }
+
+    .faded-text {
+        @apply text-neutral-600
     }
 }
 

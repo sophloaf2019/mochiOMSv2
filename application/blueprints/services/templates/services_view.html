@@ -1,29 +1,11 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <div class="max-w-5xl mx-auto px-4 my-6">
-        {% with active_link='services' %}
-            {% include "navbar.html" %}
-        {% endwith %}
-        <h1>{{service.name}}</h1>
-        {% if service.is_archived %}
-            <p class="text-red-500">This <span class="font-semibold">Service</span> is archived. Edits can still be made, however, this <span class="font-semibold">Service</span> is not useable in new orders.</p>
-        {% endif %}
-        <p>{{service.description}}</p>
-        <a href="{{ url_for('services.edit', id = service.id, url_type = service.url_type)}}">Edit this service</a>
-        <a class="block max-w-fit" href="{{ url_for('services.homepage') }}">Go to homepage</a>
-        <h2>Finances</h2>
-        <p>Cost of ${{service.cost}} per service; ${{service.total_cost}} expenses accrued</p>
-        <p>Price of ${{service.price}} per service; ${{service.revenue}} revenue earned</p>
-        {% if service.child_services %}
-            <h2>Sub-services</h2>
-            {% for child in service.child_services %}
-                <a href="{{ url_for('services.view', id = child.id, url_type = child.url_type) }}">{{child.name}}</a>
-            {% endfor %}
-        {% endif %}
-        {% if service.parent_service %}
-            <h2>Parent service</h2>
-            <a href="{{ url_for('services.view', id = service.parent_service.id, url_type = service.parent_service.url_type)}}">{{service.parent_service.name}}</a>
-        {% endif %}
-    </div>
-{% endblock content %}
+<div>
+    <h2 class="mt-1">{{service.name}}</h2>
+    {% if service.is_archived %}
+        <p class="text-red-500">This <span class="font-semibold">Service</span> is archived. Edits can still be made, however, this <span class="font-semibold">Service</span> is not useable in new orders.</p>
+    {% endif %}
+    <a href="{{ url_for('services.edit', id = service.id, url_type = service.url_type)}}">Edit this service</a>
+    {% for attr, val in service.form_attribute_list.items() %}
+        <p class="mb-0 faded-text">{{attr|snake_to_upper}}</p>
+        <p class="mt-0">{{service|attr(attr)}}</p>
+    {% endfor %}
+</div>

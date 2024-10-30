@@ -5,7 +5,7 @@ from application.blueprints.services.models import *
 
 
 # An easy-to-find list of all available configurable options.
-# Notably, Service is not present. The user gets a seperate button for that.
+# Notably, Service is not present. The user gets a separate button for that.
 all_types = [
     TextOption.url_type,
     TextareaOption.url_type,
@@ -46,11 +46,16 @@ services_bp = Blueprint(
 
 
 @services_bp.route("/", methods=["get"])
-def homepage():
+@services_bp.route("/<url_type>/<id>", methods=["get"])
+def homepage(url_type=None, id=None):
+    if url_type and id:
+        model = url_class_map.get(url_type).query.get(id)
+    else:
+        model = None
     services = Service.query.filter_by(parent_service_id=None).all()
 
     return render_template(
-        "services_homepage.html", services=services, all_types=all_types
+        "services_homepage.html", services=services, all_types=all_types, model=model
     )
 
 
@@ -83,8 +88,8 @@ def new():
     return redirect(request.referrer)
 
 
-@services_bp.route("/<url_type>/<id>", methods=["GET"])
-def view(url_type, id):
+@services_bp.route("/<url_type>/<id>/panel", methods=["GET"])
+def panel(url_type, id):
     model = url_class_map.get(url_type).query.get(id)
     if model:
         return render_template("services_view.html", service=model)
@@ -107,7 +112,13 @@ def edit(url_type, id):
 
 
 def update_instance_fields(instance, data):
-    """Helper function to update instance fields based on form data."""
+    """
+    Helper function to update instance fields based on form data.
+
+    A temporary solution is the most permanent one.
+
+    Might want to create a resource system (a la mochiOMS v1) to tighten up these operations.
+    """
     for key, value in data.items():
         if key == "is_archived":
             value = value == "True"  # Convert to boolean

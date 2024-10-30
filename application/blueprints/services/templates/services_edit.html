@@ -6,12 +6,12 @@
             {% include "navbar.html" %}
         {% endwith %}
         <h1>Editing "{{model.name}}"</h1>
+        <a class="block max-w-fit" href="{{ url_for('services.homepage', id = model.id, url_type=model.url_type) }}">Go back</a>
         <form class="mt-4" action="{{url_for('services.save', id=model.id, url_type=model.url_type)}}" method="post">
             {{ model.to_form()|safe }}
             {% with text="Save", color="violet" %}
                 {% include "button.html" %}
             {% endwith %}
-            <a class="block max-w-fit" href="{{ url_for('services.view', id = model.id, url_type=model.url_type) }}">Go back</a>
         </form>
         {% if model.url_type == 'service' %}
             <h2>Required fields</h2>

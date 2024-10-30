@@ -18,6 +18,11 @@ Current classes:
     SelectableOption
     FileOption
 
+    
+Note that each class also has an attribute called 'form_attribute_list'. This is a dictionary where the attribute name is a key,
+and the attribute type is a value. This is necessary for the FormModel class defined in extensions.py, which simplifies CRUD operations.
+Only define attributes in here that you want to be editable -- so *not* ID.
+
 """
 
 
@@ -39,8 +44,16 @@ class Service(db.Model, FormModel):
     """
 
     __tablename__ = "services"
-    
-    form_attribute_list = {'name': 'text', 'description': 'textarea', 'price':'float', 'cost':'float', 'is_archived': 'boolean', 'total_cost':'float', 'revenue':'float'}
+
+    form_attribute_list = {
+        "name": "text",
+        "description": "textarea",
+        "price": "float",
+        "cost": "float",
+        "is_archived": "boolean",
+        "total_cost": "float",
+        "revenue": "float",
+    }
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False, default="New Service")
@@ -147,8 +160,12 @@ class Option(db.Model, FormModel):
     parent_service_id = db.Column(
         db.Integer, db.ForeignKey("services.id"), nullable=False
     )
-    
-    form_attribute_list = {'name': 'text', 'notes': 'textarea', 'is_archived': 'boolean'}
+
+    form_attribute_list = {
+        "name": "text",
+        "notes": "textarea",
+        "is_archived": "boolean",
+    }
 
     def to_dict(self):
         return {
@@ -165,8 +182,13 @@ class TextOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'minimum_length': 'number', 'maximum_length': 'number', 'default_value': 'text'}
+
+    form_attribute_list = {
+        **Option.form_attribute_list,
+        "minimum_length": "number",
+        "maximum_length": "number",
+        "default_value": "text",
+    }
 
     def to_dict(self):
         data = super().to_dict()
@@ -189,8 +211,13 @@ class TextareaOption(Option):
     minimum_length = db.Column(db.Integer, nullable=True)
     maximum_length = db.Column(db.Integer, nullable=True)
     default_value = db.Column(db.String, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'minimum_length': 'number', 'maximum_length': 'number', 'default_value': 'text'}
+
+    form_attribute_list = {
+        **Option.form_attribute_list,
+        "minimum_length": "number",
+        "maximum_length": "number",
+        "default_value": "text",
+    }
 
     def to_dict(self):
         data = super().to_dict()
@@ -214,8 +241,14 @@ class NumberOption(Option):
     maximum = db.Column(db.Integer, nullable=True)
     step = db.Column(db.Integer, nullable=False, default=1)
     default_value = db.Column(db.Integer, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'minimum': 'number', 'maximum': 'number', 'step': 'number', 'default_value': 'number'}
+
+    form_attribute_list = {
+        **Option.form_attribute_list,
+        "minimum": "number",
+        "maximum": "number",
+        "step": "number",
+        "default_value": "number",
+    }
 
     def to_dict(self):
         data = super().to_dict()
@@ -240,8 +273,14 @@ class FloatOption(Option):
     maximum = db.Column(db.Float, nullable=True)
     step = db.Column(db.Float, nullable=False, default=1)
     default_value = db.Column(db.Float, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'minimum': 'float', 'maximum': 'float', 'step': 'float', 'default_value': 'float'}
+
+    form_attribute_list = {
+        **Option.form_attribute_list,
+        "minimum": "float",
+        "maximum": "float",
+        "step": "float",
+        "default_value": "float",
+    }
 
     def to_dict(self):
         data = super().to_dict()
@@ -263,8 +302,8 @@ class BooleanOption(Option):
     __tablename__ = "boolean_options"
 
     default_value = db.Column(db.Boolean, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'default_value': 'boolean'}
+
+    form_attribute_list = {**Option.form_attribute_list, "default_value": "boolean"}
 
     def to_dict(self):
         data = super().to_dict()
@@ -280,8 +319,12 @@ class DateOption(Option):
 
     default_value = db.Column(db.DateTime, nullable=True)
     enforce_future_date = db.Column(db.Boolean, nullable=True)
-    
-    form_attribute_list = {**Option.form_attribute_list, 'default_value': 'datetime-local', 'enforce_future_date': 'boolean'}
+
+    form_attribute_list = {
+        **Option.form_attribute_list,
+        "default_value": "datetime-local",
+        "enforce_future_date": "boolean",
+    }
 
     def to_dict(self):
         data = super().to_dict()

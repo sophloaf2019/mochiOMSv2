@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.13 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.14 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -550,7 +550,7 @@ video {
 
 /* Make elements with the HTML hidden attribute stay hidden by default */
 
-[hidden] {
+[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
 
@@ -679,6 +679,7 @@ a {
   transition: background-size 0.25s ease-in-out;
   text-decoration: none;
   background-position-x: 100%;
+  cursor: pointer !important;
 }
 
 a:hover, a:focus, a:active {
@@ -708,12 +709,21 @@ a:hover, a:focus, a:active {
   padding: 1rem;
 }
 
+.faded-text {
+  --tw-text-opacity: 1;
+  color: rgb(82 82 82 / var(--tw-text-opacity));
+}
+
 .static {
   position: static;
 }
 
 .col-span-2 {
   grid-column: span 2 / span 2;
+}
+
+.m-0 {
+  margin: 0px;
 }
 
 .mx-auto {
@@ -730,6 +740,18 @@ a:hover, a:focus, a:active {
   margin-bottom: 2.5rem;
 }
 
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.ml-8 {
+  margin-left: 2rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
@@ -738,16 +760,16 @@ a:hover, a:focus, a:active {
   margin-top: 1.5rem;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
 .ml-4 {
   margin-left: 1rem;
 }
 
-.ml-8 {
-  margin-left: 2rem;
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+.mt-0 {
+  margin-top: 0px;
 }
 
 .block {
