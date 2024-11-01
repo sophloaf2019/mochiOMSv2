@@ -1,11 +1,11 @@
 {% if input_type == 'textarea' %}
-    <label class="faded-text" for="{{ attr }}">{{ label }}</label>
-    <textarea name="{{ attr }}" id="{{ attr }}">{{ value }}</textarea>
+    <label class="faded-text {{label_classes if label_classes}}" for="{{ attr }}">{{ label }}</label>
+    <textarea name="{{ attr }}" id="{{ attr }}" class="{{input_classes if input_classes}}">{{ value if value is not none }}</textarea>
 {% elif input_type == 'checkbox' %}
-    <label for="{{ attr }}" class="flex gap-2 max-w-fit"><input type="checkbox" name="{{ attr }}" value="True" class="inline-block" {% if value %} checked {% endif %}><span class="mb-4">{{ label }}</span></label>
+    <label class="flex gap-2 max-w-fit {{label_classes if label_classes}}"><input type="checkbox" name="{{ attr }}" value="True" class="inline-block {{input_classes if input_classes}}" {% if value %} checked {% endif %}><span class="mb-4">{{ label }}</span></label>
     <input type="hidden" name="{{ attr }}" value="False">
 {% else %}
-    <label class="faded-text" for="{{ attr }}">{{ label }}</label>
-    <input type="{{ input_type }}" name="{{ attr }}" id="{{ attr }}" value="{{ value }}"
+    <label class="faded-text {{label_classes if label_classes}}" for="{{ attr }}">{{ label }}</label>
+    <input class="{{input_classes if input_classes}}" type="{{ input_type }}" name="{{ attr }}" id="{{ attr }}" value="{{ value if value is not none }}"
            {% if step %} step="{{ step }}" {% endif %}>
-{% endif %}
+{% endif %} 

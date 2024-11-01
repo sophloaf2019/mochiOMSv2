@@ -1,9 +1,11 @@
 <div>
     <h2 class="mt-1">{{service.name}}</h2>
     {% if service.is_archived %}
-        <p class="text-red-500">This <span class="font-semibold">Service</span> is archived. Edits can still be made, however, this <span class="font-semibold">Service</span> is not useable in new orders.</p>
+        <p class="text-amber-500"><span class="font-semibold">{{service.name}}</span> is archived. Edits can still be made, however, it is not useable in new orders.</p>
     {% endif %}
     <a href="{{ url_for('services.edit', id = service.id, url_type = service.url_type)}}">Edit this service</a>
+    <p class="mb-0 faded-text">Type</p>
+    <p class="mt-0">{{service.url_type|snake_to_upper}}</p>
     {% for attr, val in service.form_attribute_list.items() %}
         <p class="mb-0 faded-text">{{attr|snake_to_upper}}</p>
         <p class="mt-0">{{service|attr(attr)}}</p>

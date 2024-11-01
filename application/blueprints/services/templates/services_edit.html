@@ -9,6 +9,9 @@
         <a class="block max-w-fit" href="{{ url_for('services.homepage', id = model.id, url_type=model.url_type) }}">Go back</a>
         <form class="mt-4" action="{{url_for('services.save', id=model.id, url_type=model.url_type)}}" method="post">
             {{ model.to_form()|safe }}
+            {% with input_type='checkbox', attr = 'delete', label = 'Delete (cannot be undone)', label_classes='text-red-500', input_classes="accent-red-500" %}
+                {% include "form_controls.html" %}
+            {% endwith %}
             {% with text="Save", color="violet" %}
                 {% include "button.html" %}
             {% endwith %}
@@ -49,10 +52,26 @@
                 {% endwith %}
             </form>
         {% endif %}
+
+        {% if model.url_type == 'select' %}
+            <h2>Selectables</h2>
+            {% for child in model.selectables %}
+                <p>{{child.name}} (<a href="{{url_for('services.edit', id = child.id, url_type=child.url_type)}}">Edit</a>)</p>
+            {% endfor %}
+            <form class="mt-4" action="{{url_for('services.new')}}" method="post">
+                <input type="hidden" name="type_select" value="selectable">
+                <input type="hidden" name="select_option_id" value="{{model.id}}">
+                {% with text="Add New Selectable", color="violet" %}
+                    {% include "button.html" %}
+                {% endwith %}
+            </form>
+        {% endif %}
         
         <h2>Parent</h2>
         {% if model.parent_service %}
             <p>{{model.parent_service.name}} (<a href="{{url_for('services.edit', id = model.parent_service_id, url_type = model.parent_service.url_type)}}">Edit</a>)</p>
+        {% elif model.select_option %}
+            <p>{{model.select_option.name}} (<a href="{{url_for('services.edit', id = model.select_option_id, url_type = model.select_option.url_type)}}">Edit</a>)</p>
         {% else %}
             <p>No parent service.</p>
         {% endif %}

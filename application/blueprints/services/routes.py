@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from application.extensions import db
 from application.blueprints.services.models import *
+from termcolor import cprint
+from application.blueprints.services.data_validation import update_instance_fields
 
 
 # An easy-to-find list of all available configurable options.
@@ -37,6 +39,7 @@ url_class_map = {
     BooleanOption.url_type: BooleanOption,
     DateOption.url_type: DateOption,
     SelectOption.url_type: SelectOption,
+    Selectable.url_type: Selectable,
 }
 
 
@@ -62,27 +65,12 @@ def homepage(url_type=None, id=None):
 @services_bp.route("/new", methods=["POST"])
 def new():
     data = request.form.to_dict()
-    new_model = None
-    type_select = data.get("type_select")
-    match type_select:
-        case "service":
-            new_model = Service()
-        case "text":
-            new_model = TextOption()
-        case "textarea":
-            new_model = TextareaOption()
-        case "number":
-            new_model = NumberOption()
-        case "float":
-            new_model = FloatOption()
-        case "boolean":
-            new_model = BooleanOption()
-        case "date":
-            new_model = DateOption()
-        case "select":
-            new_model = SelectOption()
-    new_model.parent_service_id = data.get("parent_service_id")
-    db.session.add(new_model)
+    model = url_class_map.get(data.get("type_select"))()
+    if hasattr(model, "parent_service_id"):
+        model.parent_service_id = data.get("parent_service_id")
+    elif hasattr(model, "select_option_id"):
+        model.select_option_id = data.get("select_option_id")
+    db.session.add(model)
     db.session.commit()
 
     return redirect(request.referrer)
@@ -111,30 +99,22 @@ def edit(url_type, id):
         return redirect(url_for("services.homepage"))
 
 
-def update_instance_fields(instance, data):
-    """
-    Helper function to update instance fields based on form data.
-
-    A temporary solution is the most permanent one.
-
-    Might want to create a resource system (a la mochiOMS v1) to tighten up these operations.
-    """
-    for key, value in data.items():
-        if key == "is_archived":
-            value = value == "True"  # Convert to boolean
-        if hasattr(instance, key):
-            setattr(instance, key, value)
-
-
 @services_bp.route("/<url_type>/<id>/edit/save", methods=["POST"])
 def save(url_type, id):
     data = request.form.to_dict()
     model = url_class_map.get(url_type).query.get(id)
     if model:
-        update_instance_fields(model, data)  # Use helper function
-        db.session.commit()
-        flash("Changes saved.", "success")
-        return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+        result = update_instance_fields(model, data)
+        if result == True:
+            flash("Changes saved.", "success")
+            return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+        elif result == False:
+            flash("Something went wrong.", "danger")
+            return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+        elif result == None:
+            flash("Content deleted.", "success")
+            return redirect(url_for("services.homepage"))
+        
     if not model:
         flash("No service under that ID.", "danger")
         return redirect(url_for("services.homepage"))

@@ -104,6 +104,9 @@ class Service(db.Model, FormModel):
     date_options = db.relationship(
         "DateOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
     )
+    select_options = db.relationship(
+        "SelectOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
+    )
 
     inventory_id = db.Column(
         db.Integer, db.ForeignKey("inventory.id", ondelete="SET NULL"), nullable=True
@@ -120,6 +123,7 @@ class Service(db.Model, FormModel):
             + self.float_options
             + self.boolean_options
             + self.date_options
+            + self.select_options
         )
 
     def to_dict(self):
@@ -378,9 +382,9 @@ class Selectable(db.Model, FormModel):
     __tablename__ = "selectables"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    cost = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String(100), nullable=False, default="New Selectable")
+    price = db.Column(db.Float, nullable=False, default=0)
+    cost = db.Column(db.Float, nullable=False, default=0)
 
     # Foreign key back to SelectOption
     select_option_id = db.Column(
@@ -400,6 +404,13 @@ class Selectable(db.Model, FormModel):
     )
     inventory = db.relationship("Inventory", back_populates="selectables")
     inventory_multiplier = db.Column(db.Float, nullable=True)
+    
+    form_attribute_list = {
+        "name": "text",
+        "price": "float",
+        "cost": "float",
+        
+    }
 
     def to_dict(self):
         return {
@@ -410,3 +421,5 @@ class Selectable(db.Model, FormModel):
             "inventory": self.inventory.name,
             "inventory_multiplier": self.inventory_multiplier,
         }
+
+    url_type = "selectable"
