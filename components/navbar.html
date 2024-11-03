@@ -1,0 +1,14 @@
+<nav class="border border-neutral-300 bg-neutral-100 p-4 flex justify-between">
+    <div class="*:m-3">
+        <a class="{% if active_link == 'dashboard' %}active-link{% endif %}" href="{{url_for('homepage.homepage')}}">Dashboard</a>
+        <a class="{% if active_link == 'orders' %}active-link{% endif %}" href="">Orders</a>
+        <a class="{% if active_link == 'services' %}active-link{% endif %}" href="{{ url_for('services.homepage')}} ">Services</a>
+        <a class="{% if active_link == 'inventory' %}active-link{% endif %}" href="">Inventory</a>
+        <a class="{% if active_link == 'customers' %}active-link{% endif %}" href="">Customers</a>
+        <a class="{% if active_link == 'yourteam' %}active-link{% endif %}" href="">Your Team</a>
+        <a class="{% if active_link == 'metrics' %}active-link{% endif %}" href="">Metrics</a>
+    </div>
+    <div class="*:m-3">
+        <a class="{% if active_link == 'settings' %}active-link{% endif %}" href="">Settings</a>
+    </div>
+</nav>

@@ -1,5 +1,5 @@
 {
-  "scripts": {
-    "serve": "cd frontend && npm run serve"
+  "devDependencies": {
+    "tailwindcss": "^3.4.13"
   }
 }
