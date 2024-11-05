@@ -1,69 +1,74 @@
-{% extends "base.html" %} {% macro render_service(service) %}
-<a
-    class="block mb-4 max-w-fit service-link"
-    hx-get="{{url_for('services.panel', id = service.id, url_type=service.url_type) }}"
-    hx-target="#panel-container"
-    hx-swap="innerHTML"
-    hx-push-url="/services/{{service.url_type}}/{{service.id}}"
-    >{{service.name}}</a
->
-{% if service.all_field_children %}
-<p class="faded-text m-0 ml-4">Required fields</p>
-<div class="ml-8">
-    {% for child in service.all_field_children %} {{ render_service(child) }} {%
-    endfor %}
-</div>
-{% endif %} {% if service.child_services %}
-<p class="faded-text m-0 ml-4">Child services</p>
-<div class="ml-8">
-    {% for child in service.child_services %} {{ render_service(child) }} {%
-    endfor %}
-</div>
-{% endif %} {% endmacro %} {% block content %}
-<div class="max-w-5xl mx-auto px-4 mt-6">
-    {% with active_link='services' %} {% include "navbar.html" %} {% endwith %}
-    <h1>Services</h1>
-    <div class="grid grid-cols-2">
-        <div>
-            {% if services %} {% for service in services %} {{
-            render_service(service) }} {% endfor %} {% else %} Looks like you
-            haven't added any <span class="font-semibold">Services</span> yet.
-            Click the button below to get started. {% endif %}
-            <form
-                class="mt-4"
-                action="{{url_for('services.new')}}"
-                method="post">
-                <input
-                    type="hidden"
-                    name="type_select"
-                    value="service" />
-                {% with text="Add New Service", color="violet" %} {% include
-                "button.html" %} {% endwith %}
-            </form>
-        </div>
-        <div id="panel-container">
-            {% if model %}
-                <div
-                    hx-get="{{url_for('services.panel', id = model.id, url_type=model.url_type) }}"
-                    hx-target="#panel-container"
-                    hx-swap="innerHTML"
-                    hx-push-url="/services/{{model.url_type}}/{{model.id}}"
-                    hx-trigger="load"></div>
-            {% else %}
-                <p class="faded-text">Nothing selected.</p>
-            {% endif %}
+<PageLayout title="Services">
+    
+    {% macro render_service(service) %}
+    <a
+        class="my-0 block mb-4 max-w-fit service-link"
+        hx-get="{{url_for('services.panel', id = service.id, url_type=service.url_type) }}"
+        hx-target="#panel-container"
+        hx-swap="innerHTML"
+        hx-push-url="/services/{{service.url_type}}/{{service.id}}"
+        >{{service.name}}</a
+    >
+    {% if service.all_field_children %}
+    <p class="faded-text m-0 ml-4">Required fields</p>
+    <div class="ml-8">
+        {% for child in service.all_field_children %} {{ render_service(child) }} {%
+        endfor %}
+    </div>
+    {% endif %} {% if service.child_services %}
+    <p class="faded-text m-0 ml-4">Child services</p>
+    <div class="ml-8">
+        {% for child in service.child_services %} {{ render_service(child) }} {%
+        endfor %}
+    </div>
+    {% endif %} {% endmacro %}
+    <div class="max-w-5xl mx-auto px-4 mt-6">
+        {% with active_link='services' %} {% include "Navbar.jinja" %} {% endwith %}
+    
+        <h1>Services</h1>
+        <div class="grid grid-cols-2">
+            <div>
+                {% if services %} {% for service in services %} {{
+                render_service(service) }} {% endfor %} {% else %} Looks like you
+                haven't added any <span class="font-semibold">Services</span> yet.
+                Click the button below to get started. {% endif %}
+                <form
+                    class="mt-4"
+                    action="{{url_for('services.new')}}"
+                    method="post">
+                    <input
+                        type="hidden"
+                        name="type_select"
+                        value="service" />
+                    {% with text="Add New Service", color="violet" %} {% include
+                    "button.html" %} {% endwith %}
+                </form>
+                <DBSearch id="results" limit="True" url="{{ url_for('services.search')}}">Search your services...</DBSearch>
+            </div>
+            <div id="panel-container">
+                {% if model %}
+                    <div
+                        hx-get="{{url_for('services.panel', id = model.id, url_type=model.url_type) }}"
+                        hx-target="#panel-container"
+                        hx-swap="innerHTML"
+                        hx-push-url="/services/{{model.url_type}}/{{model.id}}"
+                        hx-trigger="load"></div>
+                {% else %}
+                    <p class="faded-text">Nothing selected.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-<script>
-    document.querySelectorAll('.service-link').forEach(link => {
-        link.addEventListener('click', function() {
-            // Remove 'active-link' from all links
-            document.querySelectorAll('.service-link').forEach(el => el.classList.remove('active-link'));
+    <script>
+        document.querySelectorAll('.service-link').forEach(link => {
+            link.addEventListener('click', function() {
+                // Remove 'active-link' from all links
+                document.querySelectorAll('.service-link').forEach(el => el.classList.remove('active-link'));
     
-            // Add 'active-link' to the clicked link
-            this.classList.add('active-link');
+                // Add 'active-link' to the clicked link
+                this.classList.add('active-link');
+            });
         });
-    });
-</script>
-{% endblock content %}
+    </script>
+    
+</PageLayout>

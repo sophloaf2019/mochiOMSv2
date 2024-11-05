@@ -1,10 +1,6 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <div class="max-w-5xl mx-auto px-4 mt-6">
-        {% with active_link='dashboard' %}
-            {% include "navbar.html" %}
-        {% endwith %}
+<PageLayout title="Dashboard">
+    <Container>
+        <Navbar active-link="dashboard"></Navbar>
         <h1>Dashboard</h1>
         <div class="grid grid-cols-2">
             <div class="col-span-2">
@@ -19,7 +15,7 @@
                 <h4>Inventory Alerts</h4>
                 <p>And an evil, scary table here!</p>
             </div>
-            
+
         </div>
-    </div>
-{% endblock content %}
+    </Container>
+</PageLayout>

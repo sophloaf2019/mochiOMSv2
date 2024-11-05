@@ -1,0 +1,10 @@
+<PageLayout>
+    <Container>
+        <Navbar active-link="orders"></Navbar>
+        <h1>Orders</h1>
+        <div>Really big table here... maybe with some configuration options...</div>
+        <form action="{{ url_for('orders.place_new_order') }}" method="post">
+            <Button format="submit" color="violet">Create new order</Button>
+        </form>
+    </Container>
+</PageLayout>

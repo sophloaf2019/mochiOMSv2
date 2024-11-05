@@ -158,7 +158,7 @@
         background-size: 0% 0.1em, 100% 0.1em;
         background-position-y: 100%;
         background-repeat: no-repeat;
-        transition: background-size 0.25s ease-in-out;
+        transition: background-size 0.175s;
         text-decoration: none;
         background-position-x: 100%;
         cursor: pointer !important;

@@ -5,6 +5,8 @@ from flask_login import LoginManager
 from sqlalchemy import MetaData
 from flask import render_template, Blueprint
 from termcolor import cprint
+from jinjax import Catalog
+from jinpro import JinjaProcesser
 
 
 convention = {
@@ -54,37 +56,41 @@ def snake_to_upper(text):
     new_text = " ".join(list_of_words)
     return new_text
 
+
 def str_to_obj(text: str):
-    
+
     # try to convert to a boolean
-    if text == 'True':
+    if text == "True":
         return True
-    if text == 'False':
+    if text == "False":
         return False
-    
+
     # try to convert to a null value
     if text == "":
         return None
-    
+
     # try to convert to an integer
     try:
         return int(text)
     except:
         pass
-    
+
     # try to convert to a float
     try:
         return float(text)
     except:
         pass
-    
+
     return text
+
 
 # Create a single instance of SQLAlchemy to be used across the app
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
+catalog = Catalog()
+jp = JinjaProcesser()
 
 # unit testing
 if __name__ == "__main__":

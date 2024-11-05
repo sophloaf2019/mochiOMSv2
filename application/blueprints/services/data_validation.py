@@ -10,6 +10,7 @@ a string to a numerical-only field).
 
 from application.extensions import str_to_obj, db
 
+
 def update_instance_fields(instance, data):
     try:
         for key, value in data.items():
@@ -22,9 +23,8 @@ def update_instance_fields(instance, data):
             if hasattr(instance, key):
                 setattr(instance, key, data[key])
         db.session.commit()
-        
+
         return True
     except Exception as e:
         db.session.rollback()
         return False
-    

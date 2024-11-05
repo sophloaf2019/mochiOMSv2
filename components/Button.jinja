@@ -1,0 +1,6 @@
+
+{% if format == 'link' %}
+    <a href="{{ url }}" class="bg-none rounded-sm bg-{{color}}-300 hover:bg-{{color}}-200 border-{{color}}-600 px-3 py-1 transition-colors border {{class}}" type="{{format}}">{{ content }}</a>
+{% else %}
+    <button class="rounded-sm bg-{{color}}-300 hover:bg-{{color}}-200 border-{{color}}-600 px-3 py-1 transition-colors border {{class}}" type="{{format}}">{{ content }}</button>
+{% endif %}

@@ -1,10 +1,8 @@
-{% extends "base.html" %}
+<PageLayout title="">
+    <Container>
 
-{% block content %}
-    <div class="max-w-5xl mx-auto px-4 my-6">
-        {% with active_link='services' %}
-            {% include "navbar.html" %}
-        {% endwith %}
+        <Navbar active-link = 'services'></Navbar>
+
         <h1>Editing "{{model.name}}"</h1>
         <a class="block max-w-fit" href="{{ url_for('services.homepage', id = model.id, url_type=model.url_type) }}">Go back</a>
         <form class="mt-4" action="{{url_for('services.save', id=model.id, url_type=model.url_type)}}" method="post">
@@ -75,5 +73,5 @@
         {% else %}
             <p>No parent service.</p>
         {% endif %}
-    </div>
-{% endblock content %}
+    </Container>
+</PageLayout>

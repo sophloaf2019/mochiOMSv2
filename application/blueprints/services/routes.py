@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from application.extensions import db
+from application.extensions import db, catalog, jp
 from application.blueprints.services.models import *
 from termcolor import cprint
 from application.blueprints.services.data_validation import update_instance_fields
@@ -57,9 +57,7 @@ def homepage(url_type=None, id=None):
         model = None
     services = Service.query.filter_by(parent_service_id=None).all()
 
-    return render_template(
-        "services_homepage.html", services=services, all_types=all_types, model=model
-    )
+    return jp.render("services_homepage.html", model=model, services=services)
 
 
 @services_bp.route("/new", methods=["POST"])
@@ -80,7 +78,7 @@ def new():
 def panel(url_type, id):
     model = url_class_map.get(url_type).query.get(id)
     if model:
-        return render_template("services_view.html", service=model)
+        return jp.render("services_view.html", service=model)
     else:
         flash(
             "Nothing of type '" + url_type + "' exists with ID " + str(id) + ".",
@@ -93,7 +91,7 @@ def panel(url_type, id):
 def edit(url_type, id):
     model = url_class_map.get(url_type).query.get(id)
     if model:
-        return render_template("services_edit.html", model=model, all_types=all_types)
+        return jp.render("services_edit.html", model=model, all_types=all_types)
     else:
         flash("Nothing of type " + model + " exists with ID " + str(id), "danger")
         return redirect(url_for("services.homepage"))
@@ -107,16 +105,38 @@ def save(url_type, id):
         result = update_instance_fields(model, data)
         if result == True:
             flash("Changes saved.", "success")
-            return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+            return redirect(
+                url_for("services.edit", id=model.id, url_type=model.url_type)
+            )
         elif result == False:
             flash("Something went wrong.", "danger")
-            return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+            return redirect(
+                url_for("services.edit", id=model.id, url_type=model.url_type)
+            )
         elif result == None:
             flash("Content deleted.", "success")
             return redirect(url_for("services.homepage"))
-        
+
     if not model:
         flash("No service under that ID.", "danger")
         return redirect(url_for("services.homepage"))
 
     return redirect(url_for("services.edit", id=model.id, url_type=model.url_type))
+
+
+@services_bp.route("/search")
+def search():
+    # Get the "search" parameter from the query string
+    search_term = request.args.get("search", "")
+
+    # Get the "limit" parameter or default to 100 if it doesn't exist
+    limit = int(request.args.get("limit", 100))
+
+    # Query the Services model, filtering by name
+    query = Service.query.filter(Service.name.ilike(f"%{search_term}%")).limit(limit)
+
+    # Execute the query to get the results
+    results = query.all()
+
+    # Render the results in the 'services_table.html' template
+    return jp.render("services_table.html", results=results)

@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
-from application.extensions import db, migrate, bcrypt, login_manager
+from application.extensions import db, migrate, bcrypt, login_manager, jp
 from application.blueprints import *
 from flask_login import LoginManager
+
 
 def create_app():
     app = Flask(__name__, template_folder="components")
@@ -12,6 +13,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    jp.init(app)
     login_manager.login_view = 'homepage.homepage'
 
     register_blueprints(app)

@@ -676,7 +676,7 @@ a {
   background-size: 0% 0.1em, 100% 0.1em;
   background-position-y: 100%;
   background-repeat: no-repeat;
-  transition: background-size 0.25s ease-in-out;
+  transition: background-size 0.175s;
   text-decoration: none;
   background-position-x: 100%;
   cursor: pointer !important;
@@ -729,6 +729,16 @@ a:hover, a:focus, a:active {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.my-0 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .my-6 {
@@ -815,6 +825,10 @@ a:hover, a:focus, a:active {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.rounded-sm {
+  border-radius: 0.125rem;
 }
 
 .border {
@@ -10619,6 +10633,10 @@ a:hover, a:focus, a:active {
 
 .bg-yellow-950\/95 {
   background-color: rgb(66 32 6 / 0.95);
+}
+
+.bg-none {
+  background-image: none;
 }
 
 .p-4 {

@@ -1,0 +1,18 @@
+{# attributes content, id, limit = False #}
+
+<div class="my-4">
+    <label for="search">{{content}}</label>
+    <input name="search" id="search" type="search" hx-get="{{url}}" hx-target="#{{id}}" hx-swap="innerHTML" hx-trigger="keyup changed delay:500ms" {% if limit %}hx-include="#limit"{% endif %}>
+    {% if limit %}
+        <label for="limit">Limit</label>
+        <select name="limit" id="limit">
+            <option>5</option>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+        </select>
+    {% endif %}
+    <div id="{{id}}">
+
+    </div>
+</div>

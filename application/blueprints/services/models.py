@@ -105,7 +105,10 @@ class Service(db.Model, FormModel):
         "DateOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
     )
     select_options = db.relationship(
-        "SelectOption", backref="parent_service", lazy=True, cascade="all, delete-orphan"
+        "SelectOption",
+        backref="parent_service",
+        lazy=True,
+        cascade="all, delete-orphan",
     )
 
     inventory_id = db.Column(
@@ -404,12 +407,11 @@ class Selectable(db.Model, FormModel):
     )
     inventory = db.relationship("Inventory", back_populates="selectables")
     inventory_multiplier = db.Column(db.Float, nullable=True)
-    
+
     form_attribute_list = {
         "name": "text",
         "price": "float",
         "cost": "float",
-        
     }
 
     def to_dict(self):
